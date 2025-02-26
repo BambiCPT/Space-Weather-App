@@ -1,10 +1,18 @@
-# Space-Weather-API
+# 🌌Space-Weather-API
 
-To install:
-git clone https://github.com/BambiCPT/Space-Weather-API.git\
 
-Install Dependecies:
-pip install -r requirements.txt 
+## 🔧 Installation & Usage
+<details> 
+<summary>To use this Space Weather API, follow these steps:</summary>
 
-To run:
-python main.py
+### 1️⃣ Clone the repository:
+`git clone https://github.com/BambiCPT/Space-Weather-API.git` \
+`cd Space-Weather-API`
+
+### 2️⃣ Install dependencies:
+`pip install -r requirements.txt`
+
+### 3️⃣ Run the script:
+`python main.py` \
+(Modify as needed based on how your project runs.)
+</details>
