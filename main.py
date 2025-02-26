@@ -1,5 +1,12 @@
+import os 
+from dotenv import load_dotenv
+
+
+
 def main():
-    print('Hello Aurora')
+    load_dotenv()
+    MY_DB_VAL = os.getenv('DB_PORT')
+    print(MY_DB_VAL)
 
 
 
