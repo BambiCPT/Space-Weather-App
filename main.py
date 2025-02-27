@@ -1,4 +1,4 @@
-from helpers.db_connector import MysqlConnector
+from helpers.database import MysqlConnector
 
 
 def main():
