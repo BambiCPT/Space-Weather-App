@@ -6,6 +6,7 @@ def main():
     cur = db.cursor()
     cur.execute("SELECT * from test;")
     print(cur.fetchall())
+    db.close()
 
 
 main()
