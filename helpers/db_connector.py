@@ -2,7 +2,7 @@ import mysql.connector
 from config.db_config import db_config
 
 
-class DataBaseConnector:
+class MysqlConnector:
     def _mysql_connector(self):
         try:
             return mysql.connector.connect(**db_config)

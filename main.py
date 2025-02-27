@@ -1,8 +1,8 @@
-from helpers.db_connector import DataBaseConnector
+from helpers.db_connector import MysqlConnector
 
 
 def main():
-    db = DataBaseConnector()._mysql_connector()
+    db = MysqlConnector()._mysql_connector()
     cur = db.cursor()
     cur.execute("SELECT * from test;")
     print(cur.fetchall())
