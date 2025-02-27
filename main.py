@@ -1,12 +1,8 @@
-import os 
 import mysql.connector
-from dotenv import load_dotenv
 from config import db_config
 
 
 def main():
-    load_dotenv()
-
     try:
         db = mysql.connector.connect(**db_config) #creates connection
         if db.is_connected():
