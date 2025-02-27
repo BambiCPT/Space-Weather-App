@@ -1,27 +1,11 @@
-import mysql.connector
-from config import db_config
+from helpers.db_connector import DataBaseConnector
 
 
 def main():
-    try:
-        db = mysql.connector.connect(**db_config) #creates connection
-        if db.is_connected():
-            print("Database connection successful!")
-    
-        cursor = db.cursor()
-        cursor.execute("SHOW TABLES") #decide on what cursor to do
+    db = DataBaseConnector()._mysql_connector()
+    cur = db.cursor()
+    cur.execute("SELECT * from test;")
+    print(cur.fetchall())
 
-        for table in cursor:
-            print(table)
 
-    except Exception as e:
-        print(f'Something went wrong: {e}')
-    finally: 
-        if cursor != None:
-            cursor.close() #closes cursor
-        if db.is_connected():
-            db.close() #closes connection
-            print("Database connection closed.")
-    
-if __name__ == "__main__":
-    main()
+main()
