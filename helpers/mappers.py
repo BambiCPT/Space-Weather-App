@@ -1,33 +1,26 @@
-import requests
-
 
 class PlanetaryKIndex:
-    def __init__(self, time_tag, kp_index, estimated_kp, kp):
-        self.time_tag = time_tag
-        self.kp_index = kp_index
-        self.estimated_kp = estimated_kp
+    def __init__(self, kp, estimated_kp, time):
         self.kp = kp
+        self.estimated_kp = estimated_kp
+        self.time = time
 
-    def __repr__(self):
-        return f"PlanetaryKIndex(time_tag={self.time_tag}, kp_index={self.kp_index}, estimated_kp={self.estimated_kp}, kp={self.kp}\n)"
+    # def __repr__(self):
+    #     return f"PlanetaryKIndex(time_tag={self.time_tag}, kp_index={self.kp_index}, estimated_kp={self.estimated_kp}, kp={self.kp}\n)"
 
 
-def kpi_index_mapper():
-    try:
-        response = requests.get(
-            "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json", timeout=5)
+def kpi_index_mapper(string):
+    mapped_pki = []
 
-        data = response.json()
-        mapped_pki = []
+    for item in string:
+        pki_obj = PlanetaryKIndex(
+            kp=item["kp"],
+            estimated_kp=item["estimated_kp"],
+            time=item["time_tag"],
+        )
+        mapped_pki.append(pki_obj)
 
-        for i in data:
-            pki_obj = PlanetaryKIndex(**i)
-            mapped_pki.append(pki_obj)
-
-        return mapped_pki
-
-    except requests.exceptions.RequestException as e:
-        return ("Request failed.", e)
+    return mapped_pki
 
 
 class XRayFlare:
@@ -37,28 +30,55 @@ class XRayFlare:
         self.max_class_time = max_class_time
         self.max_class = max_class
 
-    def __repr__(self):
-        return f"XRayFlare(begin_time={self.begin_time}, end_time={self.end_time}, max_time={self.max_class_time}, max_class={self.max_class}\n)"
+#    def __repr__(self):
+#         return f"XRayFlare(begin_time={self.begin_time}, end_time={self.end_time}, max_time={self.max_class_time}, max_class={self.max_class}\n)"
 
 
-def xray_flare_mapper():
-    try:
-        response = requests.get(
-            "https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json", timeout=5)
+def xray_flare_mapper(string):
+    mapped_flares = []
 
-        data = response.json()
-        mapped_flares = []
+    for item in string:
+        flare_obj = XRayFlare(
+            begin_time=item["begin_time"],
+            end_time=item["end_time"],
+            max_class_time=item["max_time"],
+            max_class=item["max_class"],
+        )
+        mapped_flares.append(flare_obj)
 
-        for i in data:
-            flare_obj = XRayFlare(
-                begin_time=i["begin_time"],
-                end_time=i["end_time"],
-                max_class_time=i["max_time"],
-                max_class=i["max_class"],
-            )
-            mapped_flares.append(flare_obj)
+    return mapped_flares
 
-        return mapped_flares
 
-    except requests.exceptions.RequestException as e:
-        return ("Request failed.", e)
+class SolarProbability:
+    def __init__(self, class_c_1_day, class_c_2_day, class_c_3_day, class_m_1_day, class_m_2_day, class_m_3_day, class_x_1_day, class_x_2_day, class_x_3_day, time):
+        self.class_c_1_day = class_c_1_day
+        self.class_c_2_day = class_c_2_day
+        self.class_c_3_day = class_c_3_day
+        self.class_m_1_day = class_m_1_day
+        self.class_m_2_day = class_m_2_day
+        self.class_m_3_day = class_m_3_day
+        self.class_x_1_day = class_x_1_day
+        self.class_x_2_day = class_x_2_day
+        self.class_x_3_day = class_x_3_day
+        self.time = time
+
+
+def solar_proability_mapper(string):
+    mapped_probability = []
+
+    for item in string:
+        probability_obj = SolarProbability(
+            class_c_1_day=item["c_class_1_day"],
+            class_c_2_day=item["c_class_2_day"],
+            class_c_3_day=item["c_class_3_day"],
+            class_m_1_day=item["m_class_1_day"],
+            class_m_2_day=item["m_class_2_day"],
+            class_m_3_day=item["m_class_3_day"],
+            class_x_1_day=item["x_class_1_day"],
+            class_x_2_day=item["x_class_2_day"],
+            class_x_3_day=item["x_class_3_day"],
+            time=item["date"]
+        )
+        mapped_probability.append(probability_obj)
+
+    return mapped_probability
