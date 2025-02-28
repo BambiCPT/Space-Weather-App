@@ -3,7 +3,7 @@
 
 ## 🔧 Installation & Usage
 <details> 
-<summary>To use this Space Weather API, follow these steps:</summary>
+<summary>To use this Space Weather App, follow these steps:</summary>
 
 ### 1️⃣ Clone the repository:
 `git clone https://github.com/BambiCPT/Space-Weather-API.git` \
@@ -11,17 +11,13 @@
 
 ### 2️⃣ Install dependencies:
 `pip install -r requirements.txt`
-Make sure to have `autopep8` and `pylint` extension if you have vscode
 
-autopep8: https://marketplace.visualstudio.com/items?itemName=ms-python.autopep8
-
-pylint: https://marketplace.visualstudio.com/items?itemName=ms-python.pylint
-
-### 4 Run db migration:
+### 3️⃣ Run db migration:
 `python db/migration.py`
-run this once when you make the project for the first time. Can also be runned when the db is broken. WARNING: if runned and already exist a db under the env db name. It will drop and recreate the db.
+Run this once when you have made the project for the first time. It can also be run when the database is broken. WARNING: if run and a database already exists under the Env DB name. It will drop and recreate the database.
 
-### 3️⃣ Run the script:
+### 3️4️⃣ Run the script:
 `python main.py` \
 (Modify as needed based on how your project runs.)
 </details>
+
