@@ -20,12 +20,12 @@ CREATE TABLE solar_flare_probability (
 );
 """
 
-SQL_CREATE_PLANATRY_KP_INDICES = """
-CREATE TABLE planatry_kp_indices (
+SQL_CREATE_PLANETARY_KP_INDICES = """
+CREATE TABLE planetary_kp_indices (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    kp INT,
+    kp CHAR(2),
     estimated_kp FLOAT,
-    time TIMESTAMP NULL,
+    time DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -60,7 +60,7 @@ def main():
         cur.execute(f"CREATE DATABASE {os.getenv("DB_NAME")};")
         db.database = os.getenv("DB_NAME")
         cur.execute(SQL_CREATE_SOLAR_FLARE_PROBABILITY)
-        cur.execute(SQL_CREATE_PLANATRY_KP_INDICES)
+        cur.execute(SQL_CREATE_PLANETARY_KP_INDICES)
         cur.execute(SQL_CREATE_SOLAR_FLARES)
 
     except Exception as e:
