@@ -89,3 +89,39 @@ class MySqlConnector:
                 cursor.close()
             if connection:
                 connection.close()
+
+    def get_all(self, table_name: str):
+        try:
+            connection = self._connector()
+            if not connection:
+                return ("Failed to connect to database")
+
+            cursor = connection.cursor()
+
+            if not table_name.isidentifier():
+                return f"Invalid table name: {table_name}"
+
+            sql = (f"SELECT * from {table_name} ORDER BY id")
+            cursor.execute(sql)
+
+            columns = [desc[0] for desc in cursor.description]
+            results = []
+
+            for row in cursor:
+                formatted_result = "\n".join(f"{col}: {val}" for col, val in zip(
+                    columns, row))
+                results.append(formatted_result)
+
+            if results:
+                return f"Successfully selected all records from the {table_name}:\n\n" + "\n\n".join(results)
+            return f"No records found in the {table_name}"
+
+        except mysql.connector.Error as e:
+            if connection:
+                connection.rollback()
+            return f"Error selecting records from {table_name}: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
