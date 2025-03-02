@@ -72,8 +72,12 @@ class MySqlConnector:
             cursor.execute(sql, (id_num,))
             result = cursor.fetchone()
 
-            if (result := cursor.fetchone()):
-                return f"Successfully selected id: {id_num} from the {table_name}:\n{result}"
+            if result:
+                columns = [desc[0] for desc in cursor.description]
+                formatted_result = "\n".join(f"{col}: {val}" for col, val in zip(
+                    columns, result))  # yes i used AI for this
+
+                return f"Successfully selected id: {id_num} from the {table_name}:\n{formatted_result}"
             return f"No record found with id: {id_num} from the table {table_name}"
 
         except mysql.connector.Error as e:
