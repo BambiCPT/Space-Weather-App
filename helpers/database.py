@@ -11,14 +11,14 @@ class MySqlConnector:
             print(f'DB connection error: {e}')
             return None
 
-    def insert_data(self, table_name, data: dict):
+    def insert_data(self, table_name: str, data: dict):
         if isinstance(data, dict):
             data = [data]
 
         try:
             connection = self._connector()
             if not connection:
-                return "Failed to connect to database"
+                return ("Failed to connect to database")
 
             cursor = connection.cursor()
             count = 0
@@ -49,7 +49,37 @@ class MySqlConnector:
         except mysql.connector.Error as e:
             if connection:
                 connection.rollback()
-            return f"Error inserting data: {str(e)}"
+            return (f"Error inserting data: {str(e)}")
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+    def get_by_id(self, table_name: str, id_num: int):
+        try:
+            connection = self._connector()
+            if not connection:
+                return ("Failed to connect to database")
+
+            cursor = connection.cursor()
+
+            if not table_name.isidentifier():
+                return f"Invalid table name: {table_name}"
+
+            sql = (f"SELECT * from {table_name} where id = %s")
+
+            cursor.execute(sql, (id_num,))
+            result = cursor.fetchone()
+
+            if (result := cursor.fetchone()):
+                return f"Successfully selected id: {id_num} from the {table_name}:\n{result}"
+            return f"No record found with id: {id_num} from the table {table_name}"
+
+        except mysql.connector.Error as e:
+            if connection:
+                connection.rollback()
+            return f"Error selecting id: {id_num}: {str(e)}"
         finally:
             if cursor:
                 cursor.close()
