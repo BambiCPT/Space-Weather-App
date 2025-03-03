@@ -5,19 +5,27 @@ from helpers.mappers import PlanetaryKIndex
 
 
 def main():
-    data_and_handled = SwpcNoaaApi()._get(UrlEnums.PLANETARY_K)
 
-    kpi_index_mapper = PlanetaryKIndex(  # <- initialized class object
-        kp=None,
-        estimated_kp=None,
-        time=None
+    db = MySqlConnector()
+
+    mock_data = PlanetaryKIndex(
+        kp="0Z",
+        estimated_kp=4,
+        time="2025-03-01 17:58:00",
     )
 
-    # issue is that because mappers are class methods, they need to be called on an initialized class object...
-    data = kpi_index_mapper.kpi_index_mapper(data_and_handled)
-    connector = MySqlConnector()
+    # to test delete_by_id()
+    # print(db.delete_by_id('planetary_kp_indices', 2))
 
-    print(connector.insert_data("planetary_kp_indices", data))
+    # to test get_all()
+    # print(db.get_all('planetary_kp_indices'))
+
+    # tests get_by_id() and also prints the before updated values
+    print(db.get_by_id('planetary_kp_indices', 5))
+    # updates values using mock_data object
+    db.update_by_id("planetary_kp_indices", 5, mock_data)
+    # shows the updated values vs the original values
+    print(db.get_by_id('planetary_kp_indices', 5))
 
 
 main()
