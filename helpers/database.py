@@ -126,6 +126,47 @@ class MySqlConnector:
             if connection:
                 connection.close()
 
+    def update_by_id(self, table_name: str, id_num: int, new_data: object) -> str:
+        try:
+            connection = self._connector()
+            if not connection:
+                return ("Failed to connect to database")
+
+            cursor = connection.cursor()
+
+            if not table_name.isidentifier():
+                return f"Invalid table name: {table_name}"
+
+            data_dict = vars(new_data)
+            if "created_at" in data_dict:
+                data_dict.pop("created_at")
+
+            if not data_dict:
+                return "No valid fields to update"
+
+            columns = [f"{key} = %s" for key in data_dict.keys()]
+            sql = (
+                f"UPDATE {table_name} SET {', '.join(columns)} WHERE id = %s")
+            values = tuple(data_dict.values()) + (id_num,)
+
+            cursor.execute(sql, values)
+            affected_rows = cursor.rowcount
+
+            connection.commit()
+
+            num_items = "record" if affected_rows == 1 else "records"
+            return f"Successfully updated {affected_rows} {num_items} in {table_name}"
+
+        except mysql.connector.Error as e:
+            if connection:
+                connection.rollback()
+            return f"Error updating id: {id_num}: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
     def delete_by_id(self, table_name: str, id_num: int) -> str:
         try:
             connection = self._connector()
