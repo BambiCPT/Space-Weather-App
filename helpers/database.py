@@ -99,8 +99,7 @@ class MySqlConnector:
             results = cursor.fetchall()
 
             if results:
-                return f"Successfully selected all records from the {table_name}:\n\n{json.dumps(results, indent=4)}"
-            return f"No records found in the {table_name}"
+                return results
 
         except mysql.connector.Error as e:
             if connection:
