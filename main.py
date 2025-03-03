@@ -8,8 +8,7 @@ def main():
 
     db = MySqlConnector()
     print(db.get_by_id('planetary_kp_indices', 3))
-    print("-------------")
-    print(db.get_all("planetary_kp_indices"))
+    print(db.delete_by_id('planetary_kp_indices', 3))
 
 
 main()

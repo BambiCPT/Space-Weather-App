@@ -11,7 +11,7 @@ class MySqlConnector:
             print(f'DB connection error: {e}')
             return None
 
-    def insert_data(self, table_name: str, data: dict):
+    def insert_data(self, table_name: str, data: dict) -> str:
         if isinstance(data, dict):
             data = [data]
 
@@ -56,7 +56,7 @@ class MySqlConnector:
             if connection:
                 connection.close()
 
-    def get_by_id(self, table_name: str, id_num: int):
+    def get_by_id(self, table_name: str, id_num: int) -> str:
         try:
             connection = self._connector()
             if not connection:
@@ -67,7 +67,7 @@ class MySqlConnector:
             if not table_name.isidentifier():
                 return f"Invalid table name: {table_name}"
 
-            sql = (f"SELECT * from {table_name} where id = %s")
+            sql = (f"SELECT * FROM {table_name} WHERE id = %s")
 
             cursor.execute(sql, (id_num,))
             result = cursor.fetchone()
@@ -90,7 +90,7 @@ class MySqlConnector:
             if connection:
                 connection.close()
 
-    def get_all(self, table_name: str):
+    def get_all(self, table_name: str) -> str:
         try:
             connection = self._connector()
             if not connection:
@@ -101,7 +101,7 @@ class MySqlConnector:
             if not table_name.isidentifier():
                 return f"Invalid table name: {table_name}"
 
-            sql = (f"SELECT * from {table_name} ORDER BY id")
+            sql = (f"SELECT * FROM {table_name} ORDER BY id")
             cursor.execute(sql)
 
             columns = [desc[0] for desc in cursor.description]
@@ -120,6 +120,38 @@ class MySqlConnector:
             if connection:
                 connection.rollback()
             return f"Error selecting records from {table_name}: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+    def delete_by_id(self, table_name: str, id_num: int) -> str:
+        try:
+            connection = self._connector()
+            if not connection:
+                return ("Failed to connect to database")
+
+            cursor = connection.cursor()
+            count = 0
+
+            if not table_name.isidentifier():
+                return f"Invalid table name: {table_name}"
+
+            sql = (f"DELETE FROM {table_name} WHERE id = %s")
+
+            cursor.execute(sql, (id_num,))
+            count += cursor.rowcount
+
+            connection.commit()
+
+            num_items = "item" if count == 1 else "items"
+            return f"Successfully deleted {count} {num_items} from {table_name}"
+
+        except mysql.connector.Error as e:
+            if connection:
+                connection.rollback()
+            return f"Error deleting id: {id_num}: {str(e)}"
         finally:
             if cursor:
                 cursor.close()
