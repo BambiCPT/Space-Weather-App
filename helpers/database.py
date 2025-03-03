@@ -1,6 +1,14 @@
+from enum import Enum
+import json
 import mysql.connector
 from helpers.mappers import PlanetaryKIndex, SolarProbability, XRayFlare
 from config.db_config import db_config
+
+
+class TableEnum(Enum):
+    PKI_TABLE: str = "planetary_kp_indices"
+    SF_TABLE: str = "solar_flares"
+    SFP_TABLE: str = "solar_flare_probability"
 
 
 class MySqlConnector:
@@ -11,14 +19,12 @@ class MySqlConnector:
             print(f'DB connection error: {e}')
             return None
 
-    def insert_data(self, table_name: str, data: dict) -> str:
+    def insert_data(self, table_name: TableEnum, data: dict) -> str:
         if isinstance(data, dict):
             data = [data]
 
         try:
             connection = self._connector()
-            if not connection:
-                return ("Failed to connect to database")
 
             cursor = connection.cursor()
             count = 0
@@ -56,16 +62,11 @@ class MySqlConnector:
             if connection:
                 connection.close()
 
-    def get_by_id(self, table_name: str, id_num: int) -> str:
+    def get_by_id(self, table_name: TableEnum, id_num: int) -> str:
         try:
             connection = self._connector()
-            if not connection:
-                return ("Failed to connect to database")
 
-            cursor = connection.cursor()
-
-            if not table_name.isidentifier():
-                return f"Invalid table name: {table_name}"
+            cursor = connection.cursor(dictionary=True)
 
             sql = (f"SELECT * FROM {table_name} WHERE id = %s")
 
@@ -73,11 +74,7 @@ class MySqlConnector:
             result = cursor.fetchone()
 
             if result:
-                columns = [desc[0] for desc in cursor.description]
-                formatted_result = "\n".join(f"{col}: {val}" for col, val in zip(
-                    columns, result))  # yes i used AI for this
-
-                return f"Successfully selected id: {id_num} from the {table_name}:\n{formatted_result}"
+                return f"Successfully selected id: {id_num} from the {table_name}:\n{result}"
             return f"No record found with id: {id_num} from the table {table_name}"
 
         except mysql.connector.Error as e:
@@ -90,30 +87,19 @@ class MySqlConnector:
             if connection:
                 connection.close()
 
-    def get_all(self, table_name: str) -> str:
+    def get_all(self, table_name: TableEnum) -> str:
         try:
             connection = self._connector()
-            if not connection:
-                return ("Failed to connect to database")
 
-            cursor = connection.cursor()
-
-            if not table_name.isidentifier():
-                return f"Invalid table name: {table_name}"
+            cursor = connection.cursor(dictionary=True)
 
             sql = (f"SELECT * FROM {table_name} ORDER BY id")
             cursor.execute(sql)
 
-            columns = [desc[0] for desc in cursor.description]
-            results = []
-
-            for row in cursor:
-                formatted_result = "\n".join(f"{col}: {val}" for col, val in zip(
-                    columns, row))
-                results.append(formatted_result)
+            results = cursor.fetchall()
 
             if results:
-                return f"Successfully selected all records from the {table_name}:\n\n" + "\n\n".join(results)
+                return f"Successfully selected all records from the {table_name}:\n\n{json.dumps(results, indent=4)}"
             return f"No records found in the {table_name}"
 
         except mysql.connector.Error as e:
@@ -126,16 +112,11 @@ class MySqlConnector:
             if connection:
                 connection.close()
 
-    def update_by_id(self, table_name: str, id_num: int, new_data: object) -> str:
+    def update_by_id(self, table_name: TableEnum, id_num: int, new_data: object) -> str:
         try:
             connection = self._connector()
-            if not connection:
-                return ("Failed to connect to database")
 
             cursor = connection.cursor()
-
-            if not table_name.isidentifier():
-                return f"Invalid table name: {table_name}"
 
             data_dict = vars(new_data)
             if "created_at" in data_dict:
@@ -167,17 +148,12 @@ class MySqlConnector:
             if connection:
                 connection.close()
 
-    def delete_by_id(self, table_name: str, id_num: int) -> str:
+    def delete_by_id(self, table_name: TableEnum, id_num: int) -> str:
         try:
             connection = self._connector()
-            if not connection:
-                return ("Failed to connect to database")
 
             cursor = connection.cursor()
             count = 0
-
-            if not table_name.isidentifier():
-                return f"Invalid table name: {table_name}"
 
             sql = (f"DELETE FROM {table_name} WHERE id = %s")
 
