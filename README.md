@@ -1,4 +1,4 @@
-# 🌌Space-Weather-API
+# 🌌Space-Weather-App
 
 
 ## 🔧 Installation & Usage
