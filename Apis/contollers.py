@@ -38,5 +38,4 @@ class SwpcNoaaApi():
 
     def _fetch_solar_flares_probability(self):
         data = self.__get(UrlEnums.SOLAR_PROBABILITIES)
-        MySqlConnector().insert_data(
-            TableEnum.SOLAR_FLARE_PROBABILITY, Mappers().solar_proability(data))
+        MySqlConnector().insert_data(TableEnum.SOLAR_FLARE_PROBABILITY, Mappers().solar_proability(data))
