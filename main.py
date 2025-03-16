@@ -2,7 +2,7 @@ from Apis.contollers import SwpcNoaaApi
 
 
 def main():
-    SwpcNoaaApi()._fetch_planetary_kp()
+    SwpcNoaaApi()._delete_planetary_kp(1)
 
 
 main()

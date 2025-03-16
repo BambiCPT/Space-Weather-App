@@ -42,10 +42,10 @@ class SwpcNoaaApi():
                                      Mappers().solar_proability(data))
 
     def _delete_planetary_kp(self, id: int):
-        return MySqlConnector().delete_by_id(TableEnum.PLANETARY_KP, id)
+        MySqlConnector().delete_by_id(TableEnum.PLANETARY_KP, id)
 
     def _delete_solar_flares(self, id: int):
-        return MySqlConnector().delete_by_id(TableEnum.SOLAR_FLARE, id)
+        MySqlConnector().delete_by_id(TableEnum.SOLAR_FLARE, id)
 
     def _delete_solar_flares_probability(self, id: int):
-        return MySqlConnector().delete_by_id(TableEnum.SOLAR_FLARE_PROBABILITY, id)
+        MySqlConnector().delete_by_id(TableEnum.SOLAR_FLARE_PROBABILITY, id)
