@@ -62,14 +62,13 @@ class MySqlConnector:
 
             cursor = connection.cursor(dictionary=True)
 
-            sql = (f"SELECT * FROM {table_name} WHERE id = %s")
+            sql = (f"SELECT * FROM {table_name.value} WHERE id = %s")
 
             cursor.execute(sql, (id_num,))
             result = cursor.fetchone()
 
             if result:
-                return f"Successfully selected id: {id_num} from the {table_name}:\n{result}"
-            return f"No record found with id: {id_num} from the table {table_name}"
+                return result
 
         except mysql.connector.Error as e:
             if connection:
@@ -87,7 +86,7 @@ class MySqlConnector:
 
             cursor = connection.cursor(dictionary=True)
 
-            sql = (f"SELECT * FROM {table_name} ORDER BY id")
+            sql = (f"SELECT * FROM {table_name.value} ORDER BY id")
             cursor.execute(sql)
 
             results = cursor.fetchall()
@@ -98,7 +97,7 @@ class MySqlConnector:
         except mysql.connector.Error as e:
             if connection:
                 connection.rollback()
-            return f"Error selecting records from {table_name}: {str(e)}"
+            return f"Error selecting records from {table_name.value}: {str(e)}"
         finally:
             if cursor:
                 cursor.close()
@@ -120,7 +119,7 @@ class MySqlConnector:
 
             columns = [f"{key} = %s" for key in data_dict.keys()]
             sql = (
-                f"UPDATE {table_name} SET {', '.join(columns)} WHERE id = %s")
+                f"UPDATE {table_name.value} SET {', '.join(columns)} WHERE id = %s")
             values = tuple(data_dict.values()) + (id_num,)
 
             cursor.execute(sql, values)
@@ -129,7 +128,7 @@ class MySqlConnector:
             connection.commit()
 
             num_items = "record" if affected_rows == 1 else "records"
-            return f"Successfully updated {affected_rows} {num_items} in {table_name}"
+            return f"Successfully updated {affected_rows} {num_items} in {table_name.value}"
 
         except mysql.connector.Error as e:
             if connection:
@@ -148,7 +147,7 @@ class MySqlConnector:
             cursor = connection.cursor()
             count = 0
 
-            sql = (f"DELETE FROM {table_name} WHERE id = %s")
+            sql = (f"DELETE FROM {table_name.value} WHERE id = %s")
 
             cursor.execute(sql, (id_num,))
             count += cursor.rowcount
@@ -156,7 +155,7 @@ class MySqlConnector:
             connection.commit()
 
             num_items = "item" if count == 1 else "items"
-            return f"Successfully deleted {count} {num_items} from {table_name}"
+            return f"Successfully deleted {count} {num_items} from {table_name.value}"
 
         except mysql.connector.Error as e:
             if connection:
