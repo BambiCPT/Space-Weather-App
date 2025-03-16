@@ -68,8 +68,7 @@ class MySqlConnector:
             result = cursor.fetchone()
 
             if result:
-                return f"Successfully selected id: {id_num} from the {table_name.value}:\n{result}"
-            return f"No record found with id: {id_num} from the table {table_name.value}"
+                return result
 
         except mysql.connector.Error as e:
             if connection:
