@@ -148,7 +148,7 @@ class MySqlConnector:
             cursor = connection.cursor()
             count = 0
 
-            sql = (f"DELETE FROM {table_name} WHERE id = %s")
+            sql = (f"DELETE FROM {table_name.value} WHERE id = %s")
 
             cursor.execute(sql, (id_num,))
             count += cursor.rowcount
@@ -156,7 +156,7 @@ class MySqlConnector:
             connection.commit()
 
             num_items = "item" if count == 1 else "items"
-            return f"Successfully deleted {count} {num_items} from {table_name}"
+            return f"Successfully deleted {count} {num_items} from {table_name.value}"
 
         except mysql.connector.Error as e:
             if connection:
